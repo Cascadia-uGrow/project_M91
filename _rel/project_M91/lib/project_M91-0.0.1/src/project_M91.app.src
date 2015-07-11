@@ -1,0 +1,14 @@
+%% -*- mode: erlang -*-
+{application, project_M91,
+ [
+  {description, "the project_M91 project"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { project_M91_app, []}},
+  {env, []}
+ ]}.
+%% vim: set filetype=erlang tabstop=2

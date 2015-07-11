@@ -2,8 +2,8 @@
 %% 	[http://www.cascadiamicrogrow.com]
 %% @copyright 2015 Camille Day 
 %% @version x.x.x
-%% @title GET the Generic eDoc Template
-%% @doc GET is an eDoc skeleton template
+%% @title TITLE 
+%% @doc DESC
 %% display as "YYYY-MM-DD".
 
 

@@ -1,0 +1,8 @@
+run_erl [27230] Sat Jul 11 11:47:26 2015
+Args before exec of shell:
+run_erl [27230] Sat Jul 11 11:47:26 2015
+argv[0] = sh
+run_erl [27230] Sat Jul 11 11:47:26 2015
+argv[1] = -c
+run_erl [27230] Sat Jul 11 11:47:26 2015
+argv[2] = exec "/home/indicasloth/CMGS/project_M91/_rel/project_M91/bin/project_M91" "console"

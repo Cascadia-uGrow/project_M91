@@ -1,0 +1,62 @@
+
+=====
+===== LOGGING STARTED Mon Jul  6 20:42:54 PDT 2015
+=====
+Exec: /home/indicasloth/CMGS/project_M91/_rel/project_M91/erts-6.3.1/bin/erlexec -boot /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/project_M91 -env ERL_LIBS /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/lib -config /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/sys.config -args_file /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/vm.args -- console
+Root: /home/indicasloth/CMGS/project_M91/_rel/project_M91
+/home/indicasloth/CMGS/project_M91/_rel/project_M91
+Erlang/OTP 17 [erts-6.3.1] [source-bca4b97] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]
+
+
+=INFO REPORT==== 6-Jul-2015::20:42:55 ===
+    application: project_M91
+    exited: {{shutdown,
+                 {failed_to_start_child,hw_sup,
+                     {supervisor_data,
+                         {invalid_type,
+                             #{intensity => 1,
+                               period => 5,
+                               strategy => simple_one_for_one}}}}},
+             {project_M91_app,start,[normal,[]]}}
+    type: permanent
+Eshell V6.3.1  (abort with ^G)
+(project_M91@127.0.0.1)1> {"Kernel pid terminated",application_controller,"{application_start_failure,project_M91,{{shutdown,{failed_to_start_child,hw_sup,{supervisor_data,{invalid_type,#{intensity => 1,period => 5,strategy => simple_one_for_one}}}}},{project_M91_app,start,[normal,[]]}}}"}
+
+Crash dump was written to: erl_crash.dump
+Kernel pid terminated (application_controller) ({application_start_failure,project_M91,{{shutdown,{failed_to_start_child,hw_sup,{supervisor_data,{invalid_type,#{intensity => 1,period => 5,strategy =
+
+=====
+===== LOGGING STARTED Sat Jul 11 11:47:26 PDT 2015
+=====
+Exec: /home/indicasloth/CMGS/project_M91/_rel/project_M91/erts-6.3.1/bin/erlexec -boot /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/project_M91 -env ERL_LIBS /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/lib -config /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/sys.config -args_file /home/indicasloth/CMGS/project_M91/_rel/project_M91/releases/0.0.1/vm.args -- console
+Root: /home/indicasloth/CMGS/project_M91/_rel/project_M91
+/home/indicasloth/CMGS/project_M91/_rel/project_M91
+Erlang/OTP 17 [erts-6.3.1] [source-bca4b97] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]
+
+
+=INFO REPORT==== 11-Jul-2015::11:47:27 ===
+    application: project_M91
+    exited: {{shutdown,
+              {failed_to_start_child,env_sup,
+               {shutdown,
+                {failed_to_start_child,env_fsm,
+                 {'EXIT',
+                  {undef,
+                   [{env_fsm,start,[],[]},
+                    {supervisor,do_start_child,2,
+                     [{file,"supervisor.erl"},{line,314}]},
+                    {supervisor,start_children,3,
+                     [{file,"supervisor.erl"},{line,297}]},
+                    {supervisor,init_children,2,
+                     [{file,"supervisor.erl"},{line,263}]},
+                    {gen_server,init_it,6,
+                     [{file,"gen_server.erl"},{line,306}]},
+                    {proc_lib,init_p_do_apply,3,
+                     [{file,"proc_lib.erl"},{line,237}]}]}}}}}},
+             {project_M91_app,start,[normal,[]]}}
+    type: permanent
+Eshell V6.3.1  (abort with ^G)
+(project_M91@127.0.0.1)1> {"Kernel pid terminated",application_controller,"{application_start_failure,project_M91,{{shutdown,{failed_to_start_child,env_sup,{shutdown,{failed_to_start_child,env_fsm,{'EXIT',{undef,[{env_fsm,start,[],[]},{supervisor,do_start_child,2,[{file,\"supervisor.erl\"},{line,314}]},{supervisor,start_children,3,[{file,\"supervisor.erl\"},{line,297}]},{supervisor,init_children,2,[{file,\"supervisor.erl\"},{line,263}]},{gen_server,init_it,6,[{file,\"gen_server.erl\"},{line,306}]},{proc_lib,init_p_do_apply,3,[{file,\"proc_lib.erl\"},{line,237}]}]}}}}}},{project_M91_app,start,[normal,[]]}}}"}
+
+Crash dump was written to: erl_crash.dump
+Kernel pid terminated (application_controller) ({application_start_failure,project_M91,{{shutdown,{failed_to_start_child,env_sup,{shutdown,{failed_to_start_child,env_fsm,{'EXIT',{undef,[{env_fsm,sta
