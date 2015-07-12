@@ -6,10 +6,12 @@
 -include("sensor.hrl").
 
 start(State) ->
-	sensor_xtor:start_link(),
-	sensor_xtor:init(State).
+	State#hw_state{pyPID = python:start()},
+	sensor_xtor:start_link().
+	%sensor_xtor:init(State).
 
 stop(State) ->
+	python:stop(State#hw_state.pyPID),
 	{ok, State}.
 
 read(State) ->

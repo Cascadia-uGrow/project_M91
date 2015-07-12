@@ -36,17 +36,26 @@
 
 %% API Functions
 start_link() ->
+	init(#hw_state{network = 0, port = 0}),
 	gen_server:start_link(?MODULE, [], []).
 
-%% Gen Server Functions
-init(Args) ->
-	{ok, Args}.
 
-handle_call(Msg, {From, Tag}, State) ->
+%% Gen Server Functions
+init(State) ->
+	%State#hw_state{pyPID = python:start()},
+	{ok, State}.
+
+handle_call({read, Register}, {From, Tag}, State) ->
+	{reply, hw_io:i2c_read(State, Register), State};
+handle_call({write, Register, Data}, {From, Tag}, State) ->
+	{reply, hw_io:i2c_write(State, Register, Data), State};
+handle_call(Msg, _From, State) ->
+	io:write(Msg),
 	{noreply, State}.
 
 handle_cast(Msg, State) ->
-	{noreply, State}.
+	io:write("MEOW MEOW MEOW"),
+	{noreply,  State}.
 
 handle_info(Info, State) ->
 	{noreply, State}.
