@@ -16,6 +16,7 @@ init(_Args) ->
 					{hw_sup, {hw_sup, start_link, []}, permanent, infinity, supervisor, [hw_sup]},
 					{act_sup, {act_sup, start_link, []}, permanent, infinity, supervisor, [act_sup]},
 					{sense_sup, {sense_sup, start_link, []}, permanent, infinity, supervisor, [sense_sup]},
-					{env_sup, {env_sup, start_link, []}, permanent, infinity, supervisor, [env_sup]}				
+					{env_sup, {env_sup, start_link, []}, permanent, infinity, supervisor, [env_sup]},
+					{hw_server, {hw_server, start_link, [{hw_sup, env_sup}]}, permanent, infinity, worker, [hw_server]}				
 				 ],
     {ok, {SupFlags, ChildSpec}}.

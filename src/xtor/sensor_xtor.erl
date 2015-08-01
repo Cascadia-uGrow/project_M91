@@ -29,26 +29,31 @@
 	{stop, Reason :: term()} |
 	ignore.
 
--callback read(State :: term()) ->
+-callback dev_read(State :: term()) ->
 	{ok, Data :: term()} |
+	{stop, Reason :: term()} |
+	ignore.
+
+-callback dev_write(State :: term()) ->
+	{ok, Result :: term()} |
 	{stop, Reason :: term()} |
 	ignore.
 
 %% API Functions
 start_link() ->
-	init(#hw_state{network = 0, port = 0}),
+	%init(#hw_state{network = 0, port = 0}),
 	gen_server:start_link(?MODULE, [], []).
 
 
 %% Gen Server Functions
 init(State) ->
-	%State#hw_state{pyPID = python:start()},
+	State#hw_state{pyPID = python:start()},
 	{ok, State}.
 
 handle_call({read, Register}, {From, Tag}, State) ->
-	{reply, hw_io:i2c_read(State, Register), State};
+	{reply, hw_io:sensor_read(State, Register), State};
 handle_call({write, Register, Data}, {From, Tag}, State) ->
-	{reply, hw_io:i2c_write(State, Register, Data), State};
+	{reply, hw_io:sensor_write(State, Register, Data), State};
 handle_call(Msg, _From, State) ->
 	io:write(Msg),
 	{noreply, State}.
