@@ -1,5 +1,5 @@
 
--record(sensor, {name, pid, read_config, data}).
+-record(sensor, {name, pid, hw_state, data}).
 
 -record(hw_state, {pyPID, network, port}).
 

@@ -1,7 +1,7 @@
 %% -*- mode: erlang -*-
 {application, project_M91,
  [
-  {description, "the project_M91 project"},
+  {description, "project_M91: uGrow Automation Controller"},
   {vsn, "0.0.1"},
   {registered, []},
   {applications, [
