@@ -47,17 +47,17 @@ class Adafruit_MCP230XX(object):
         self.num_gpios = num_gpios
 
         # set defaults
-        if num_gpios <= 8:
-            self.i2c.write8(MCP23017_IODIRA, 0xFF)  # all inputs on port A
-            self.direction = self.i2c.readU8(MCP23017_IODIRA)
-            self.i2c.write8(MCP23008_GPPUA, 0x00)
-        elif num_gpios > 8 and num_gpios <= 16:
-            self.i2c.write8(MCP23017_IODIRA, 0xFF)  # all inputs on port A
-            self.i2c.write8(MCP23017_IODIRB, 0xFF)  # all inputs on port B
-            self.direction = self.i2c.readU8(MCP23017_IODIRA)
-            self.direction |= self.i2c.readU8(MCP23017_IODIRB) << 8
-            self.i2c.write8(MCP23017_GPPUA, 0x00)
-            self.i2c.write8(MCP23017_GPPUB, 0x00)
+#        if num_gpios <= 8:
+#            self.i2c.write8(MCP23017_IODIRA, 0xFF)  # all inputs on port A
+#            self.direction = self.i2c.readU8(MCP23017_IODIRA)
+#            self.i2c.write8(MCP23008_GPPUA, 0x00)
+#        elif num_gpios > 8 and num_gpios <= 16:
+#            self.i2c.write8(MCP23017_IODIRA, 0xFF)  # all inputs on port A
+#            self.i2c.write8(MCP23017_IODIRB, 0xFF)  # all inputs on port B
+#            self.direction = self.i2c.readU8(MCP23017_IODIRA)
+#            self.direction |= self.i2c.readU8(MCP23017_IODIRB) << 8
+#            self.i2c.write8(MCP23017_GPPUA, 0x00)
+#            self.i2c.write8(MCP23017_GPPUB, 0x00)
 
     def _changebit(self, bitmap, bit, value):
         assert value == 1 or value == 0, "Value is %s must be 1 or 0" % value
