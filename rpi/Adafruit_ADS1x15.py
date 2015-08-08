@@ -135,7 +135,7 @@ class ADS1x15:
     # whereas new Pis use SMBus 1.  If you see an error like:
     # 'Error accessing 0x48: Check your I2C address '
     # change the SMBus number in the initializer below!
-    self.i2c = Adafruit_I2C(address)
+    self.i2c = Adafruit_I2C(address, debug=0)
     self.address = address
     self.debug = debug
 
@@ -209,7 +209,7 @@ class ADS1x15:
     # Wait for the ADC conversion to complete
     # The minimum delay depends on the sps: delay >= 1/sps
     # We add 0.1ms to be sure
-    delay = 1.0/sps+0.0001
+    delay = 1.0/sps+0.001
     time.sleep(delay)
 
     # Read the conversion results
