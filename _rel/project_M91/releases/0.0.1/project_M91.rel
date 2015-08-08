@@ -1,3 +1,0 @@
-{release,{"project_M91","0.0.1"},
-         {erts,"6.3.1"},
-         [{kernel,"3.1"},{stdlib,"2.3"},{project_M91,"0.0.1"}]}. 

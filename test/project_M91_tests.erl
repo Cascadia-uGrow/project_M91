@@ -14,12 +14,7 @@ project_M91_test_() ->
       {"project_M91 is alive",
        fun() ->
                %% format is always: expected, actual
-                ?assertEqual(howdy, project_M91:hello())
+               ?assertEqual(howdy, project_M91:hello())
        end}
       ]}.
 
-	%{ "Behviour Test",
-	%fun() ->
-	%	temp_xtor:init(idle),
-	%	temp_xtor:start()
-	%end}

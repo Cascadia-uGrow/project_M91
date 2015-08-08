@@ -16,6 +16,8 @@ start_link() ->
 
 init(_Args) ->
 	SupFlags = {one_for_one, 2, 1},
-	ChildSpecs = [],
+	ChildSpecs = [
+		{hw_server, {hw_server, start_link, []}, permanent, 5000, worker, [hw_server]}
+	],
 	{ok, {SupFlags, ChildSpecs}}.
 

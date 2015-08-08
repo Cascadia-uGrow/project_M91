@@ -24,7 +24,7 @@ init(Args) ->
 		hw_state:init([])
 	catch
 		throw:{error, {hw_state_init_failed, Reason}} -> exit({error, {hw_state_init_failed, Reason}})
-	end,
+	end,	
 	ok.
 
 handle_call(read_temp, From, State) ->
@@ -32,7 +32,7 @@ handle_call(read_temp, From, State) ->
 	try
 		{ok, Temp} = hw_state:read(temp_avg),
 		State#env_state{temp = Temp},
-		From ! {ok, State}
+		gen_event:notify(env_man, {temp_update, Temp})
 	catch 
 		throw:{error, {no_table, Key}} -> exit(error, no_table)
 	end;

@@ -1,5 +1,0 @@
-[{release,"project_M91","0.0.1","6.3.1",
-          [{kernel,"3.1","./lib/kernel-3.1"},
-           {stdlib,"2.3","./lib/stdlib-2.3"},
-           {project_M91,"0.0.1","./lib/project_M91-0.0.1"}],
-          permanent}].

@@ -17,8 +17,8 @@ start_link() ->
 init(_Args) ->
 	SupFlags = {one_for_one, 2, 1},
 	ChildSpecs = [
-						{env_fsm, {env_fsm, start, []}, permanent, 5000, worker, [env_fsm]},
-						{hw_server, {hw_server, start, []}, permanent, 5000, worker, [hw_server]}
+						{env_event, {env_event, start_link, []}, permanent, 5000, worker, [env_event]},
+						{env_timer, {env_timer, start_link, []}, permanent, 5000, worker, [env_timer]}
 					 ],
 	{ok, {SupFlags, ChildSpecs}}.
 
