@@ -23,8 +23,8 @@ start_link() ->
 init(_Args) ->
 	% Setup DB
 	try
-		{ok, Tab} = hw_state:init([]),
-		{ok, PyPid} = hw_io:init(),
+		Tab = hw_state:init([]),
+		PyPid = hw_io:init(),
 		State = #hw_state{tab = Tab, pyPid = PyPid},
 		{ok, State}
 	catch
