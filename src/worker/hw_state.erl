@@ -9,8 +9,7 @@
 -module(hw_state).
 
 -include_lib("stdlib/include/qlc.hrl").
-
--record(hw_state, {type, name, addr}).
+-include("hw.hrl").
 
 -define(HW_CONFIG, "/home/indicasloth/.m91/config/hw.conf").
 -define(DB_DIR, "/home/indicasloth/.m91/db/").
@@ -45,19 +44,20 @@ create() ->
 	try	
 		ok = mnesia:create_schema([node()]),
 		ok = mnesia:start(),
-		{atomic, ok} = mnesia:create_table(hw_state, [{type, bag}, {attributes, record_info(fields, hw_state)}]),
-		{atomic, ok} = mnesia:add_table_index(hw_state, addr)	
+		{atomic, ok} = mnesia:create_table(hw_state, [{type, bag}, {attributes, record_info(fields, hw_entry)}]),
+		{atomic, ok} = mnesia:add_table_index(hw_state, name)	
 	catch
 		error:{badmatch, {Event, Reason}} -> throw({Event, {hw_state_create_failed, Reason}})
 	end,
 	try 
 		{ok, Entries} = file:consult(?HW_CONFIG),
-		populate(Entries)
+		populate(Entries),
+		mnesia:backup(?DB_BACK),
+		{ok, Entries}
 	catch
 		error:{badmatch, {error, _}} -> throw({error, "HW Config Missing"});
 		throw:{aborted, {no_exist, Thing}} -> throw({error, "HW Config Error"})
-	end,
-	mnesia:backup(?DB_BACK).
+	end.
 
 populate([]) ->
 	ok;
@@ -74,7 +74,7 @@ start(nuclear) ->
 start([]) ->
 	application:set_env(mnesia, dir, ?DB_DIR),
 	try
-		{ok, Tabs} = restore()
+		{atomic, Tabs} = restore()
 	catch
 		throw:{aborted, no_schema} -> create();
 		error:{badmatch, {error, Reason}} -> throw({error, {hw_state_start_failed, Reason}})
@@ -83,7 +83,8 @@ start([]) ->
 init(Args) ->
 	% Setup DB
 	try
-		{ok, State} = start(Args)
+		{ok, Tab} = start(Args),
+		Tab
 	catch
 		throw:{error, {hw_state_start_fail, Reason}} -> throw({error, {hw_state_init_fail, Reason}}); 
 		throw:{error, Reason} -> start(nuclear)

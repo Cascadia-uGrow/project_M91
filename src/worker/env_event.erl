@@ -49,8 +49,6 @@ start_link() ->
 	gen_event:add_handler(env_man, env_event, []).
 
 init(_Args) ->
-	timer:start(),
-	timer:apply_interval(5000, gen_server, cast, {hw_server, read_temp}),
 	{ok, #state{}}.
 
 handle_event({temp_update, Temp}, State) ->
