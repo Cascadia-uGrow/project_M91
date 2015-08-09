@@ -11,9 +11,6 @@
 -include_lib("stdlib/include/qlc.hrl").
 -include("hw.hrl").
 
--define(HW_CONFIG, "/home/indicasloth/.m91/config/hw.conf").
--define(DB_DIR, "/home/indicasloth/.m91/db/").
--define(DB_BACK, "/home/indicasloth/.m91/db/BACKUP").
 
 -export([init/1, write/1, read/1, terminate/2, code_change/3]).
 

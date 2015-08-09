@@ -13,11 +13,12 @@
 -include("hw.hrl").
 
 init() ->
-	{ok, PyPid} = python:start(),
+	{ok, PyPid} = python:start([{python_path, ?PY_PATH}]),
 	PyPid.
 
 terminate(PyPid) ->
 	python:stop(PyPid).
 
-temp_read(Port, PyPid) ->
+temp_read(PyPid, Port) ->
 	python:call(PyPid, hal, temp_read_func, [Port]).
+

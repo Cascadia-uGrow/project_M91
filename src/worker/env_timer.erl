@@ -5,20 +5,25 @@
 %% @title env_timer 
 %% @doc timer management worker
 %% display as "YYYY-MM-DD".
+
+%% Timers:
+%% temp update timer
+%% light cycle timer
+
 -module(env_timer).
 -export([start_link/0, stop/0]).
 
+
 -define(ENV_CONF, "/home/indicasloth/.m91/conf/env.conf").
+
 
 start_link() ->
 	EnvState = file:consult(?ENV_CONF),
 	timer:start(),
 	% setup temp update timer
 	setup(temp, EnvState),
-	% setup water cycle timer
-	setup(light, EnvState),
 	% setup light cycle timer
-	setup(water, EnvState),
+	setup(light, EnvState),
 	{ok, self()}.
 
 stop() ->
