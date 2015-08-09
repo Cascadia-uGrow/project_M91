@@ -13,7 +13,7 @@
 -include("hw.hrl").
 
 init() ->
-	{ok, PyPid} = python:start([{python_path, ?PY_PATH}]),
+	{ok, PyPid} = python:start([{python_path, "/home/ugrow/project_M91/rpi"}]),
 	PyPid.
 
 terminate(PyPid) ->
