@@ -23,7 +23,7 @@ write(Record) ->
 
 read(Key) ->
 	try
-		mnesia:activity(transaction, fun() -> mnesia:read({hw_state, Key}) end)
+		mnesia:activity(transaction, fun() -> mnesia:read({hw_entry, Key}) end)
 	catch 
 		exception:{aborted, {no_thing_exists, hw_state}} -> throw({error, {no_table, Key}})
 	end. 
@@ -41,8 +41,8 @@ create() ->
 	try	
 		ok = mnesia:create_schema([node()]),
 		ok = mnesia:start(),
-		{atomic, ok} = mnesia:create_table(hw_state, [{type, bag}, {attributes, record_info(fields, hw_entry)}]),
-		{atomic, ok} = mnesia:add_table_index(hw_state, name)	
+		{atomic, ok} = mnesia:create_table(hw_entry, [{type, bag}, {attributes, record_info(fields, hw_entry)}]),
+		{atomic, ok} = mnesia:add_table_index(hw_entry, name)	
 	catch
 		error:{badmatch, {Event, Reason}} -> throw({Event, {hw_state_create_failed, Reason}})
 	end,
@@ -80,7 +80,7 @@ start([]) ->
 init(Args) ->
 	% Setup DB
 	try
-		{ok, Tab} = start(Args),
+		{atomic, Tab} = start(Args),
 		Tab
 	catch
 		throw:{error, {hw_state_start_fail, Reason}} -> throw({error, {hw_state_init_fail, Reason}}); 

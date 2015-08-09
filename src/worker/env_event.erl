@@ -9,11 +9,13 @@
 -module(env_event).
 -behaviour(gen_event).
 
+-include("hw.hrl").
+
 -record(room, {night=1, day=0, cooling=0, watering=0, co2=0}).
 -record(env, {type, temp_range, hum_range, water_range, light_cycle}).
 -record(state, {room = #room{}, env = #env{}}).
 
--export([init/1, terminate/3, handle_event/2, handle_call/2, handle_info/2, code_change/4]).
+-export([init/1, start_link/0, terminate/3, handle_event/2, handle_call/2, handle_info/2, code_change/4]).
 
 
 ac_cycle(Temp, State) ->
@@ -45,11 +47,12 @@ light_cycle(_Light, State) ->
 	
 
 start_link() -> 
-	gen_event:start_link({global, env_man}),
+	gen_event:start_link({local, env_man}),
 	gen_event:add_handler(env_man, env_event, []).
 
 init(_Args) ->
-	{ok, #state{}}.
+	Env = file:consult(?ENV_CONFIG),
+	{ok, #state{env = Env}}.
 
 handle_event({temp_update, Temp}, State) ->
 	{ok, ac_cycle(Temp, State)};

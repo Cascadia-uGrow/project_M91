@@ -12,10 +12,7 @@
 -include_lib("stdlib/include/qlc.hrl").
 -include("hw.hrl").
 
--export([init/1, start/0, start_link/0, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
-
-start() ->
-	start_link().
+-export([init/1, start_link/0, handle_call/3, handle_cast/2, handle_info/2, terminate/2, code_change/3]).
 
 start_link() ->
 	gen_server:start_link({global,hw_server}, hw_server, [], []).
@@ -23,16 +20,16 @@ start_link() ->
 init(_Args) ->
 	% Setup DB
 	try
-		Tab = hw_state:init([]),
+		{ok, Tab} = hw_state:init([]),
 		PyPid = hw_io:init(),
 		State = #hw_state{tab = Tab, pyPid = PyPid},
-		State
+		{ok, State}
 	catch
 		throw:{error, {hw_state_init_failed, Reason}} -> exit({error, {hw_state_init_failed, Reason}})
 	end.
 
 average(Data) ->
-	42.
+	Data.
 
 update_avg(List, PyPid) ->
 	update_avg(List, [], PyPid).
@@ -48,10 +45,12 @@ handle_call(read_temp, From, State) ->
 	try
 		
 		% get a list of temp sensors
-		{ok, Temps} = hw_state:read(temp),
-		Temp = update_avg(Temps, State#hw_state.pyPid),
+		[Temps] = hw_state:read(temp),
+		Temp = hw_io:temp_read(State#hw_state.pyPid, Temps#hw_entry.port),	
+		%Temp = update_avg(Temps, State#hw_state.pyPid),
 		%Temp = 0,
-		gen_event:notify(env_man, {temp_update, Temp})
+		gen_event:notify(env_man, {temp_update, Temp}),
+		{no_reply, State}
 	catch 
 		throw:{error, {no_table, Key}} -> exit(error, no_table)
 	end;
