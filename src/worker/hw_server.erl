@@ -26,7 +26,7 @@ init(_Args) ->
 		Tab = hw_state:init([]),
 		PyPid = hw_io:init(),
 		State = #hw_state{tab = Tab, pyPid = PyPid},
-		{ok, State}
+		State
 	catch
 		throw:{error, {hw_state_init_failed, Reason}} -> exit({error, {hw_state_init_failed, Reason}})
 	end.
