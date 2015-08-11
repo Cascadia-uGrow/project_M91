@@ -19,8 +19,8 @@ class hal(object):
          
 
     def current_read(self, port, channel):
-	SPS = 1600
-        N = int(1.0/60.0 * 10.0 * SPS)
+        SPS = 1600
+        N = int(1.0/60.0 * 100.0 * SPS)
         samples = list()
         self.tca.portSet(1 << port)
         samples.append(self.adc.startContinuousConversion(channel=channel,pga=6144,sps=SPS) )
@@ -96,12 +96,12 @@ if __name__ == '__main__':
     moisture = rpi.soil_moist_read(4)       # ADC is on iic channel 4
     current = rpi.current_read(4,0)
     power = rpi.power(4,0)
-    print "Current Temp: %02.2f°C" % temp
+    print "Current Temp: %02.1f°C" % temp
     print "Current Humidity: %02.2f%%" %humidity
     print "Soil Moisture: %01.3f (sensor currently disconnected)" % moisture
-    print "RMS Current on Relay 0: %02.4f (A)" %current
+    print "RMS Current on Relay 0: %02.1f (A)" %current
 
-    print "Average power on Relay 0: %02.4f (W)" %power
+    print "Average power on Relay 0: %03d (W)" %power
     print "relay switch demo"
     for relay in range(0, 8):
         rpi.relay_writeMask(5,0x01 << relay)
