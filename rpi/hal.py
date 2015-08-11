@@ -59,13 +59,24 @@ class hal(object):
         return hum
     
         
-    def relay_writeMask(self, port,mask):
+    def relay_writeMaskProt(self, port,mask):
         self.tca.portSet(1 << port)
-        self.mcp.write8(mask)
+        self.mcp.write8(mask & 0x01)
+        
+    def relay_writeMask(self, port,mask):
+        read = self.relay_readState(port) & 0x01
+        self.tca.portSet(1 << port)
+        self.mcp.write8(mask | read)
+    
+    def relay_initProt(self, port):
+        self.tca.portSet(1 << port)
+        self.mcp.config(0, self.mcp.OUTPUT)
+        self.relay_writeMask(port,0x01)
+
     
     def relay_init(self, port):
         self.tca.portSet(1 << port)
-        for pin in range(0,8):
+        for pin in range(1,8):
              self.mcp.config(pin, self.mcp.OUTPUT)
         self.relay_writeMask(port,0xFF)
 
