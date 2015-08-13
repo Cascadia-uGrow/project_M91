@@ -9,6 +9,7 @@ from Adafruit_MCP230xx import Adafruit_MCP230XX
 from pca9548a import TI_TCA9548A
 from Adafruit_ADS1x15 import ADS1x15
 import time 
+from scipy.signal import lfilter, firwin
 class hal(object):
     def __init__(self):
         self.tca = TI_TCA9548A(address = 0x70)
@@ -16,11 +17,9 @@ class hal(object):
         self.mcp = Adafruit_MCP230XX(address = 0x20, num_gpios = 8)
         self.adc = ADS1x15(address=0x48,ic=0)
 
-         
-
-    def current_read(self, port, channel):
-        SPS = 1600
-        N = int(1.0/60.0 * 100.0 * SPS)
+    def adc_getVector(self, port, channel, samples, fs=1600) :
+        SPS = fs
+        N = samples
         samples = list()
         self.tca.portSet(1 << port)
         samples.append(self.adc.startContinuousConversion(channel=channel,pga=6144,sps=SPS) )
@@ -30,14 +29,36 @@ class hal(object):
                 if (sample != samples[n-1] ) :
                     break
             samples.append(sample)
-            time.sleep(0.8 * 1/SPS)
         self.adc.stopContinuousConversion()
-        offset = sum(samples) / N 
+        return samples 
+
+
+    def current_read(self, port, channel):
+        SPS = 490
+        N = int(1.0/60.0 * 25.0 * SPS)
+        samples = list()
+        self.tca.portSet(1 << port)
+        samples.append(self.adc.startContinuousConversion(channel=channel,pga=6144,sps=SPS) )
+        for n in range(1, N-1) :
+            while True :
+                sample = self.adc.getLastConversionResults()
+                if (sample != samples[n-1] ) :
+                    break
+            samples.append(sample)
+            time.sleep(1 / (SPS*2))
+        self.adc.stopContinuousConversion()
+        offset = sum(samples) /  len(samples)
         #offset = max(samples) - (max(samples) - min(samples)) / 2 
         for n in range(0, N-1) :
             #samples[n] = (samples[n] - 2500) ** 2
-            samples[n] = (samples[n] - offset) ** 2
-        current = sqrt(sum(samples)/ len(samples))
+            samples[n] = (samples[n] - offset)
+        h = firwin(3,60.0/490.0)
+        filtered = lfilter(h,1.0,samples)
+        squares = list();
+        for n in range(0, len(filtered)-1) :
+            squares.append(filtered[n]**2)
+        mean = sum(squares)/ len(squares)
+        current = sqrt(mean)
         return current / 66 # 100mV per amp scale on sensor
     
     def power(self, port, channel) :
