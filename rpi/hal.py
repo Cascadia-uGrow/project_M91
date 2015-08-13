@@ -52,7 +52,7 @@ class hal(object):
         for n in range(0, N-1) :
             #samples[n] = (samples[n] - 2500) ** 2
             samples[n] = (samples[n] - offset)
-        h = firwin(3,60.0/490.0)
+        h = firwin(21,360.0/490.0)
         filtered = lfilter(h,1.0,samples)
         squares = list();
         for n in range(0, len(filtered)-1) :
