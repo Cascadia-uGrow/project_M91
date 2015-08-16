@@ -9,16 +9,44 @@
 
 -module(hw_io).
 
--export([init/0, terminate/1, temp_read/2] ).
+-export([init/0, terminate/1, read/3, write/4] ).
 -include("hw.hrl").
 
 init() ->
-	{ok, PyPid} = python:start([{python_path, "/home/ugrow/project_M91/rpi"}]),
+	{ok, PyPid} = python:start([{python_path, "/home/indicasloth/project_M91/rpi"}]),
 	PyPid.
 
 terminate(PyPid) ->
 	python:stop(PyPid).
 
-temp_read(PyPid, Port) ->
-	python:call(PyPid, hal, temp_read_func, [Port]).
+read(PyPid, temp, {Port, Chan}) ->
+	python:call(PyPid, hal, temp_read_func, [Port]);
+
+read(PyPid, hum, {Port, Chan}) ->
+	python:call(PyPid, hal, hum_read_func, [Port]);
+
+read(PyPid, soil, {Port, Chan}) ->
+	python:call(PyPid, hal, soil_moist_read_func, [Port]);
+
+read(PyPid, curr, {Port, Chan}) ->
+	python:call(PyPid, hal, current_read_func, [Port, Chan]);
+
+read(PyPid, power, {Port, Chan}) ->
+	python:call(PyPid, hal, power_func, [Port, Chan]);
+
+read(PyPid, relay, {Port, Chan}) ->
+	python:call(PyPid, hal, relay_readState_func, [Port]).
+
+write(PyPid, relay, Action, {Port, Chan}) ->
+	Mask = 1 bsl Chan,
+	State = python:call(PyPid, hal, relay_readState_func, [Port]),
+	case Action of
+		on ->
+			NewState = State bor Mask;
+		off ->
+			NewState = State xor Mask
+	end,
+	python:call(PyPid, hal, relay_writeMask_func, [Port, NewState]).
+
+
 

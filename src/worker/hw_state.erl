@@ -12,16 +12,24 @@
 -include("hw.hrl").
 
 
--export([init/1, write/1, read/1, terminate/2, code_change/3]).
+-export([init/1, write_db/1, read_db/1, read_hw/2, terminate/2, code_change/3]).
 
-write(Record) ->
+read_hw(Recs, PyPid) ->
+	read_hw(Recs, [], PyPid).
+read_hw([Rec | Recs], Values, PyPid) ->
+	NewValues = Values ++ hw_io:read(PyPid, Rec#hw_entry.type, Rec#hw_entry.addr),
+	read_hw(Recs, NewValues, PyPid); 
+read_hw([], Values, PyPid) ->
+	Values.
+
+write_db(Record) ->
 	try
 		mnesia:activity(transaction, fun() -> mnesia:write(Record) end)
 	catch
 		exception:{aborted,{no_thing_exists, Tab}} -> throw({aborted, {no_thing_exists, Record}})
 	end.
 
-read(Key) ->
+read_db(Key) ->
 	try
 		mnesia:activity(transaction, fun() -> mnesia:read({hw_entry, Key}) end)
 	catch 
@@ -60,7 +68,7 @@ populate([]) ->
 	ok;
 
 populate([Entry|Entries]) ->
-	write(Entry),
+	write_db(Entry),
 	populate(Entries).
 
 start(nuclear) ->
@@ -71,17 +79,19 @@ start(nuclear) ->
 start([]) ->
 	application:set_env(mnesia, dir, ?DB_DIR),
 	try
-		{atomic, Tabs} = restore()
+		{atomic, Tab} = restore(),
+		{ok, Tab}
 	catch
 		throw:{aborted, no_schema} -> create();
-		error:{badmatch, {error, Reason}} -> throw({error, {hw_state_start_failed, Reason}})
+		error:{badmatch, {error, Reason}} -> throw({error, {hw_state_start_failed, Reason}});
+		error:{badmatch, {aborted, Reason}} -> throw({aborted, {hw_state_restore_failed, Reason}})
 	end.	
 
 init(Args) ->
 	% Setup DB
 	try
-		{atomic, Tab} = start(Args),
-		Tab
+		{ok, Tab} = start(Args),
+		{ok, Tab}
 	catch
 		throw:{error, {hw_state_start_fail, Reason}} -> throw({error, {hw_state_init_fail, Reason}}); 
 		throw:{error, Reason} -> start(nuclear)

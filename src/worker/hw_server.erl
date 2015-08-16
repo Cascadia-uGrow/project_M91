@@ -28,38 +28,47 @@ init(_Args) ->
 		throw:{error, {hw_state_init_failed, Reason}} -> exit({error, {hw_state_init_failed, Reason}})
 	end.
 
-average(Data) ->
-	Data.
+debug_print(Mod, Msg) ->
+	io:write(Mod + Msg).
 
-update_avg(List, PyPid) ->
-	update_avg(List, [], PyPid).
+average(X) -> 
+	X,
+	average(X, 0, 0).
+average([H|T], Length, Sum) -> average(T, Length + 1, Sum + H);
+average([], Length, Sum) -> 
+	Sum,
+	Length,
+	Sum / Length.
 
-update_avg([Cur | List], Data, PyPid) ->
-	New = hw_io:temp_read(PyPid, Cur#hw_entry.port),
-	update_avg(List, [Data | New], PyPid);
-update_avg([], Data, PyPid) ->
-	average(Data).
-
-handle_call(read_temp, From, State) ->
-	% check ets for current state
-	try
-		
-		% get a list of temp sensors
-		[Temps] = hw_state:read(temp),
-		Temp = hw_io:temp_read(State#hw_state.pyPid, Temps#hw_entry.port),	
-		%Temp = update_avg(Temps, State#hw_state.pyPid),
-		%Temp = 0,
-		gen_event:notify(env_man, {temp_update, Temp}),
-		{no_reply, State}
-	catch 
-		throw:{error, {no_table, Key}} -> exit(error, no_table)
-	end;
-	%{reply, State};
 	
 handle_call(Request, From, State) ->
 	{noreply, State}.
 
+handle_cast(read_hum, State) ->
+	try
+		% get a list of hum sensors
+		HumRecs = hw_state:read_db(hum),
+		HumValues = hw_state:read_hw(HumRecs, State#hw_state.pyPid),
+		Hum = average(HumValues),
+		gen_event:notify(env_man, {hum_update, Hum}),
+		{noreply, State}
+	catch 
+		throw:{error, {no_table, Key}} -> exit(error, no_table)
+	end;
+
+handle_cast(read_temp, State) ->
+	try
+		% get a list of temp sensors
+		[TempRecs] = hw_state:read_db(temp),
+		TempValues = hw_state:read_hw(TempRecs, State#hw_state.pyPid),
+		Temp = average(TempValues),
+		gen_event:notify(env_man, {temp_update, Temp}),
+		{noreply, State}
+	catch 
+		throw:{error, {no_table, Key}} -> exit(error, no_table)
+	end;
 handle_cast(Request, State) ->
+	debug_print(?MODULE, "cast received"),
 	{noreply, State}.
 
 handle_info(Request, State) ->
