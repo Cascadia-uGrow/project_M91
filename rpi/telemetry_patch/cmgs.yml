@@ -1,0 +1,137 @@
+---
+
+title: CMGS
+
+blocks:
+  - title: Environment
+    type: metric
+    placement: [1,1]
+    size: [2,2]
+    contents:
+      - title: Temperature
+        data: "d.FC.CMGS.Temp"
+        units: C
+        format: "%5.1f"
+        importance: key
+        viz: none
+        scale: [180.0,-50.0]
+        showzero: True
+      - title: Relative Humidity 
+        data: "d.FC.CMGS.Hum"
+        units: percent
+        format: "%5.0f"
+        importance: key
+        viz: none
+        scale: [1000.0,-1000.0]
+        showzero: True
+      - title: CO2 Concentration 
+        data: "d.FC.CMGS.CO2"
+        units: ppm
+        format: "%5.0f"
+        importance: key
+        viz: none
+        scale: [1000.0,-1000.0]
+        showzero: True
+  - title: Plant Conditions
+    type: metric
+    placement: [3,1]
+    size: [2,2]
+    contents:
+      - title: Soil Moisture
+        data: "d.FC.CMGS.Soil"
+        units: m/s/s
+        format: "%5.0f"
+        importance: Key
+        viz: none
+        showzero: True
+      - title: Ambient Light
+        data: "d.FC.CMGS.Light"
+        units: m/s/s
+        format: "%5.0f"
+        importance: Key
+        viz: none
+        showzero: True
+  - title: Relay Current
+    type: metric
+    placement: [5,1]
+    size: [1,2]
+    contents:
+      - title: Relay 1
+        data: "d.FC.CMGS.R1_Current"
+        units: Amps
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 2
+        data: "d.FC.CMGS.R1_Current"
+        units: Amps
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 3
+        data: "d.FC.CMGS.R1_Current"
+        units: Amps
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 4
+        data: "d.FC.CMGS.R1_Current"
+        units: Amps
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 5
+        data: "d.FC.CMGS.R1_Current"
+        units: Amps
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 6
+        data: "d.FC.CMGS.R1_Current"
+        units: Amps
+        format: "%5.0f"
+        importance: minor
+        viz: none
+  - title: Relay Power 
+    type: metric
+    placement: [6,1]
+    size: [1,2]
+    contents:
+      - title: Relay 1
+        data: "d.FC.CMGS.R1_Power"
+        units: Watts
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 2
+        data: "d.FC.CMGS.R1_Power"
+        units: Watts
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 3
+        data: "d.FC.CMGS.R1_Power"
+        units: Watts
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 4
+        data: "d.FC.CMGS.R1_Power"
+        units: Watts
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 5
+        data: "d.FC.CMGS.R1_Power"
+        units: Watts
+        format: "%5.0f"
+        importance: minor
+        viz: none
+      - title: Relay 6
+        data: "d.FC.CMGS.R1_Power"
+        units: Watts
+        format: "%5.0f"
+        importance: minor
+        viz: none
+
+...
