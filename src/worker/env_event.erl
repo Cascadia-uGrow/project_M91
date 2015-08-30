@@ -51,7 +51,7 @@ start_link() ->
 	gen_event:add_handler(env_man, env_event, []).
 
 init(_Args) ->
-	Env = file:consult(?ENV_CONFIG),
+	{ok, Env} = file:consult(?ENV_CONFIG),
 	{ok, #state{env = Env}}.
 
 handle_event({temp_update, Temp}, State) ->

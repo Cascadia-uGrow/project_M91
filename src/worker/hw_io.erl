@@ -20,7 +20,7 @@ terminate(PyPid) ->
 	python:stop(PyPid).
 
 read(PyPid, temp, {Port, Chan}) ->
-	python:call(PyPid, hal, temp_read_func, [Port]);
+	python:call(PyPid, debug_hal, temp_read_func, [Port]);
 
 read(PyPid, hum, {Port, Chan}) ->
 	python:call(PyPid, hal, hum_read_func, [Port]);
