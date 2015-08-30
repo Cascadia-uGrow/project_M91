@@ -67,7 +67,9 @@ handle_cast(read_temp, State) ->
 		gen_event:notify(env_man, {temp_update, Temp})
 	catch 
 		throw:{error, Reason} -> exit(error, Reason);
-		throw:{error, {no_table, Key}} -> exit(error, no_table)
+		throw:{error, {no_table, Key}} -> exit(error, no_table);
+		% read_db failed and returned an empty list
+		error:{badmatch, []} -> exit(error, db_failed)
 	end,
 	{noreply, State};
 
@@ -79,6 +81,7 @@ handle_info(Request, State) ->
 	{noreply, State}.
 
 terminate(Reason, State) ->
+	hw_state:terminate(Reason, State),
 	exit(Reason).
 
 code_change(OldVsn, State, Extra) ->

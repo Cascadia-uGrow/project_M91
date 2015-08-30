@@ -19,7 +19,9 @@
 
 
 ac_cycle(Temp, State) ->
-	TempState = {Temp < lists:min((State#state.env)#env.temp_range), Temp > lists:max((State#state.env)#env.temp_range)},
+	%TempState = {Temp < lists:min((State#state.env)#env.temp_range), Temp > lists:max((State#state.env)#env.temp_range)},
+	TempState = {false, {true, true}},
+	%Test = State#state.env#env.temp_range,
 	case {(State#state.room)#room.cooling, TempState} of 
 		{true, {true, _}} ->
 			% turn off ac	
@@ -55,7 +57,9 @@ init(_Args) ->
 	{ok, #state{env = Env}}.
 
 handle_event({temp_update, Temp}, State) ->
-	{ok, ac_cycle(Temp, State)};
+	NState = ac_cycle(Temp, State),
+	io:write(State),
+	{ok, NState};
 
 handle_event({light_update, Light}, State) ->
 	{ok, light_cycle(Light, State)};
