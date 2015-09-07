@@ -1,4 +1,4 @@
-#a!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 from math import sqrt
 from ads1x15_ex_singleended import read_volts
@@ -35,7 +35,7 @@ class hal(object):
 
     def current_read(self, port, channel):
         SPS = 490
-        N = int(1.0/60.0 * 25.0 * SPS)
+        N = int(1.0/60.0 * 10.0 * SPS)
         samples = list()
         self.tca.portSet(1 << port)
         samples.append(self.adc.startContinuousConversion(channel=channel,pga=6144,sps=SPS) )
@@ -52,7 +52,7 @@ class hal(object):
         for n in range(0, N-1) :
             #samples[n] = (samples[n] - 2500) ** 2
             samples[n] = (samples[n] - offset)
-        h = firwin(21,360.0/490.0)
+        h = firwin(13,120.0/245.0)
         filtered = lfilter(h,1.0,samples)
         squares = list();
         for n in range(0, len(filtered)-1) :
@@ -63,7 +63,7 @@ class hal(object):
     
     def power(self, port, channel) :
         rmsI = self.current_read(port, channel)
-        power = 120 * rmsI 
+        power = 116 * rmsI 
         return power
 
     def soil_moist_read(self, port):
@@ -83,13 +83,27 @@ class hal(object):
     
         
     def relay_writeMaskProt(self, port,mask):
-        self.tca.portSet(1 << port)
-        self.mcp.write8(mask & 0x01)
+        relay_writeMask(self, port,mask)
+        #read = self.relay_readState(port) & 0x01
+        #self.tca.portSet(1 << port)
+        #self.mcp.write8(read & 0xFE | mask & 0x01)
         
-    def relay_writeMask(self, port,mask):
-        read = self.relay_readState(port) & 0x01
+    def relay_on(self, port, mask):
+        mask = mask ^ 0xFF
         self.tca.portSet(1 << port)
-        self.mcp.write8(mask & 0xFE | read)
+        mask = mask & self.relay_readState(port)
+        self.mcp.write8(mask)
+
+    def relay_off(self, port, mask) :
+        self.tca.portSet(1 << port)
+        mask = mask | self.relay_readState(port)
+        self.mcp.write8(mask)
+
+    def relay_writeMask(self, port,mask):
+        read = self.relay_readState(port)
+        mask = mask ^ 0xff
+        self.tca.portSet(1 << port)
+        self.mcp.write8(mask & 0xFF & read)
     
     def relay_initProt(self, port):
         self.tca.portSet(1 << port)
@@ -116,7 +130,7 @@ if __name__ == '__main__':
     relays = rpi.relay_readState(5)         # Relay control is on iic channel 5
     moisture = rpi.soil_moist_read(4)       # ADC is on iic channel 4
     current = rpi.current_read(4,0)
-    power = rpi.power(4,0)
+    power = 0.94 * rpi.power(4,0)
     print "Current Temp: %02.1f°C" % temp
     print "Current Humidity: %02.2f%%" %humidity
     print "Soil Moisture: %01.3f (sensor currently disconnected)" % moisture
