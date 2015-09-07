@@ -98,7 +98,7 @@ init(Args) ->
 	end.
 	
 terminate(State, Reason) ->
-	if not (State == error) ->
+	if (State == shutdown) ->
 		mnesia:backup(?DB_BACK)
 	end,
 	mnesia:stop(),

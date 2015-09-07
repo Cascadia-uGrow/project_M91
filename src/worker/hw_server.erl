@@ -34,6 +34,8 @@ debug_print(Mod, Msg) ->
 average(X) -> 
 	X,
 	average(X, 0, 0).
+average(X, 0, 0) ->
+	X;
 average([H|T], Length, Sum) -> average(T, Length + 1, Sum + H);
 average([], Length, Sum) -> 
 	Sum,
@@ -47,8 +49,8 @@ handle_call(Request, From, State) ->
 handle_cast(read_hum, State) ->
 	try
 		% get a list of hum sensors
-		HumRecs = hw_state:read_db(hum),
-		HumValues = hw_state:read_hw(HumRecs, State#hw_state.pyPid),
+		[HumRecs] = hw_state:read_db(hum),
+		HumValues = hw_state:read_hw([HumRecs], State#hw_state.pyPid),
 		Hum = average(HumValues),
 		gen_event:notify(env_man, {hum_update, Hum}),
 		{noreply, State}
@@ -60,13 +62,17 @@ handle_cast(read_temp, State) ->
 	try
 		% get a list of temp sensors
 		[TempRecs] = hw_state:read_db(temp),
-		TempValues = hw_state:read_hw(TempRecs, State#hw_state.pyPid),
+		TempValues = hw_state:read_hw([TempRecs], State#hw_state.pyPid),
 		Temp = average(TempValues),
-		gen_event:notify(env_man, {temp_update, Temp}),
-		{noreply, State}
+		gen_event:notify(env_man, {temp_update, Temp})
 	catch 
-		throw:{error, {no_table, Key}} -> exit(error, no_table)
-	end;
+		throw:{error, Reason} -> exit(error, Reason);
+		throw:{error, {no_table, Key}} -> exit(error, no_table);
+		% read_db failed and returned an empty list
+		error:{badmatch, []} -> exit(error, db_failed)
+	end,
+	{noreply, State};
+
 handle_cast(Request, State) ->
 	debug_print(?MODULE, "cast received"),
 	{noreply, State}.
@@ -75,6 +81,7 @@ handle_info(Request, State) ->
 	{noreply, State}.
 
 terminate(Reason, State) ->
+	hw_state:terminate(Reason, State),
 	exit(Reason).
 
 code_change(OldVsn, State, Extra) ->
